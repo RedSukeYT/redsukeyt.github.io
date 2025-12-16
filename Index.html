@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>RIGEROZ Gaming Hub | RedSuke YT</title>
+
+  <!-- SEO & SOCIAL -->
+  <meta name="description" content="RIGEROZ Gaming Hub – Hardcore gaming, modpacks, esports arena & live streams." />
+  <meta property="og:title" content="RIGEROZ Gaming Hub" />
+  <meta property="og:description" content="Hardcore gaming, modpacks, esports & live streams" />
+  <meta property="og:type" content="website" />
+
+  <!-- TAILWIND -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- SCRIPTS IN HEAD -->
+  <script>
+    // Gaming Sounds
+    const clickSound=new Audio('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3');
+    document.querySelectorAll('button').forEach(b=>b.onclick=()=>{
+      // Only play sound if the button is not the theme toggle to avoid double sound on initial click
+      if (b.id !== 'theme') {
+        clickSound.play();
+      }
+    });
+
+    // FPS Counter
+    let fpsBox=document.createElement('div');
+    fpsBox.style.cssText='position:fixed;top:10px;right:10px;padding:6px 10px;background:rgba(0,0,0,0.7);color:var(--primary);font-size:12px;z-index:9999;border-radius:4px;font-family:"Orbitron",sans-serif;';
+    document.body.appendChild(fpsBox);
+    let last=performance.now(),frames=0;
+    function fpsLoop(now){frames++;if(now-last>=1000){fpsBox.textContent='FPS '+frames;frames=0;last=now;}requestAnimationFrame(fpsLoop)}
+    requestAnimationFrame(fpsLoop);
+  </script>
+
+  <!-- FONTS -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+  /* =========================
+     01. VARIABLES
+  ========================= */
+  :root{
+    --primary:#00E0FF; /* Cyan */
+    --secondary:#FF5050; /* Red */
+    --dark:#0d0d10; /* Near Black */
+    --light:#ffffff;
+    --text-dark:#111;
+    --text-light:#eaeaea;
+  }
+
+  /* =========================
+     02. BASE
+  ========================= */
+  html,body{height:100%}
+  body{
+    font-family:'Inter',sans-serif;
+    background:var(--light);
+    color:var(--text-dark);
+    transition:.35s;
+    scroll-behavior: smooth; /* Added smooth scrolling */
+  }
+  body.dark{background:var(--dark);color:var(--text-light)}
+  .font-orbitron{font-family:'Orbitron',sans-serif}
+
+  /* =========================
+     03. UI COMPONENTS
+  ========================= */
+  .btn-clean{
+    background:var(--primary);
+    color:#000;
+    padding:.6rem 1.4rem;
+    font-weight:700;
+    border:2px solid var(--primary);
+    border-radius: 6px; /* Added rounded corners */
+    transition:.3s;
+    box-shadow: 0 4px 10px rgba(0, 224, 255, 0.3); /* Subtle initial shadow */
+  }
+  .btn-clean:hover{
+    background:transparent;
+    color:var(--primary);
+    box-shadow:0 0 16px var(--primary); /* Stronger glow on hover */
+    transform: translateY(-2px); /* Lift effect */
+  }
+
+  /* Style for the mode button to make it distinct */
+  #theme {
+    background: transparent;
+    color: var(--primary);
+    border: 2px solid var(--primary);
+    box-shadow: none;
+  }
+  #theme:hover {
+    background: var(--primary);
+    color: var(--dark);
+    box-shadow: 0 0 10px var(--primary);
+  }
+
+
+  .stat-card{
+    /* Adjusted background for better contrast in light mode */
+    background:linear-gradient(180deg,var(--light) 0%, #f4faff 100%);
+    border:1px solid rgba(0,224,255,.2);
+    border-radius:12px; /* Slightly more rounded */
+    padding:20px;
+    width:180px;
+    text-align:center;
+    box-shadow: 0 8px 15px -5px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease;
+  }
+  .stat-card:hover {
+    transform: translateY(-5px); /* Hover lift */
+    box-shadow: 0 10px 20px -5px rgba(0, 224, 255, 0.2);
+  }
+  body.dark .stat-card{
+    background:linear-gradient(180deg, #18181b, #0d0d10);
+    border:1px solid rgba(0,224,255,.4);
+    box-shadow: 0 8px 15px -5px rgba(0, 0, 0, 0.4);
+  }
+  .stat-number{font-size:36px;font-weight:900;color:var(--primary); text-shadow: 0 0 4px rgba(0, 224, 255, 0.6);}
+
+  /* Section Styles */
+  .section-padding {
+      padding-top: 5rem;
+      padding-bottom: 5rem;
+  }
+
+  /* Game Card Styling */
+  .game-card {
+    border: 2px solid var(--secondary);
+    background: rgba(255, 80, 80, 0.05); /* Light red background */
+    padding: 1.5rem;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    text-align: center;
+  }
+  body.dark .game-card {
+    border: 2px solid var(--secondary);
+    background: rgba(255, 80, 80, 0.1);
+  }
+
+  .game-card:hover {
+    transform: scale(1.03);
+    box-shadow: 0 0 20px rgba(255, 80, 80, 0.4);
+  }
+
+
+  /* =========================
+     04. EFFECTS
+  ========================= */
+  .glow{text-shadow:0 0 10px var(--primary)}
+  .red-glow{text-shadow:0 0 8px var(--secondary)}
+  .hud-grid{
+    background-image:radial-gradient(circle at 20% 20%,rgba(0,224,255,.05) 1px,transparent 1px);
+    background-size:30px 30px;
+    opacity:.12;
+  }
+
+  /* =========================
+     05. LOADER
+  ========================= */
+  #loader{
+    position:fixed;inset:0;background:var(--dark);
+    display:flex;align-items:center;justify-content:center;flex-direction:column;
+    z-index:9999;color:var(--text-light);
+    transition: opacity 0.5s ease; /* Ensure smooth fade */
+  }
+  .bar{width:280px;height:8px;background:#222;border-radius:99px;overflow:hidden}
+  .bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--secondary),var(--primary));animation:load 2.5s forwards}
+  @keyframes load{to{width:100%}}
+
+  /* =========================
+     06. RESPONSIVE
+  ========================= */
+  @media(max-width:640px){
+    .stat-card{width:calc(50% - 12px); padding: 15px;}
+    .stat-number{font-size:28px;}
+    #hero h1 {font-size: 3rem;}
+    #gallery .grid {grid-template-columns: repeat(2, 1fr);}
+    /* Keep mobile button visible on mobile */
+    .md\:hidden.fixed {display: block !important;}
+  }
+  @media(min-width: 641px) {
+    /* Hide the mobile button on larger screens */
+    .md\:hidden {display: none;}
+  }
+
+  </style>
+</head>
+<body>
+
+<!-- LOADER -->
+<div id="loader">
+  <div class="text-4xl font-orbitron glow">RIGEROZ HUB</div>
+  <div class="text-xs mt-2 tracking-widest text-cyan-400">BOOTING SYSTEM</div>
+  <div class="bar mt-4"><i></i></div>
+</div>
+
+<!-- HEADER -->
+<header class="fixed w-full top-0 z-40 bg-white/90 backdrop-blur-sm border-b border-cyan-200 dark:bg-black/90 dark:border-cyan-700">
+  <div class="max-w-7xl mx-auto flex justify-between items-center px-4 md:px-6 py-4">
+    <a href="#hero" class="font-orbitron text-xl glow" style="color:var(--primary)">RedSuke YT</a>
+    <nav class="hidden md:flex gap-8 font-semibold text-sm">
+      <a class="hover:text-cyan-400 transition" href="#hero">HOME</a>
+      <a class="hover:text-cyan-400 transition" href="#stats">STATS</a>
+      <a class="hover:text-cyan-400 transition" href="#gallery">GALLERY</a>
+      <a class="hover:text-cyan-400 transition" href="#games">GAMES</a>
+    </nav>
+    <div class="flex items-center gap-3">
+        <button id="theme" class="btn-clean" aria-label="Toggle Dark Mode">MODE</button>
+        <button onclick="toggleChat()" class="btn-clean text-xs md:hidden">AI</button>
+    </div>
+  </div>
+</header>
+
+<main class="pt-24">
+
+  <!-- HERO -->
+  <section id="hero" class="relative h-[85vh] flex items-center justify-center bg-black text-center text-white">
+    <!-- Background Grid Effect -->
+    <div class="absolute inset-0 hud-grid"></div>
+
+    <!-- Background Image/Video Placeholder -->
+    <div class="absolute inset-0" style="background: url('https://placehold.co/1920x1080/000000/00E0FF?text=EPIC+GAMING+BACKGROUND') center/cover no-repeat; opacity: 0.2;"></div>
+
+    <div class="relative z-10 p-4">
+      <p class="font-orbitron text-sm tracking-widest text-cyan-400">// RIGEROZ GAMING HUB //</p>
+      <h1 class="text-5xl md:text-7xl font-orbitron font-black mt-4 glow">
+        MAXIMUM PERFORMANCE INITIATED
+      </h1>
+      <p class="mt-4 max-w-xl mx-auto text-lg text-gray-300">Join the hardcore community for extreme challenges, custom modpacks, and competitive esports action.</p>
+      <a href="https://www.youtube.com/@RedSukeYT" target="_blank" class="btn-clean mt-8 inline-block">WATCH LIVE ON YOUTUBE</a>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <section id="stats" class="section-padding text-center">
+    <h2 class="font-orbitron text-3xl mb-4 red-glow" style="color:var(--secondary)">CORE PLAYER STATS</h2>
+    <p class="text-gray-500 dark:text-gray-400 mb-10">Real-time metrics from the current session.</p>
+    <div class="flex flex-wrap justify-center gap-6 max-w-4xl mx-auto px-4">
+      <div class="stat-card">
+        <div class="text-sm font-semibold text-gray-600 dark:text-gray-400">LEVEL</div>
+        <div id="lvl" class="stat-number">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="text-sm font-semibold text-gray-600 dark:text-gray-400">XP GATHERED</div>
+        <div id="xp" class="stat-number">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="text-sm font-semibold text-gray-600 dark:text-gray-400">K/D RATIO</div>
+        <div class="stat-number">3.12</div>
+      </div>
+      <div class="stat-card">
+        <div class="text-sm font-semibold text-gray-600 dark:text-gray-400">WIN STREAK</div>
+        <div class="stat-number">7</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- GALLERY -->
+  <section id="gallery" class="section-padding bg-gray-100 dark:bg-[#151518]">
+    <h2 class="font-orbitron text-3xl text-center mb-4 glow" style="color:var(--primary)">HIGHLIGHTS FEED</h2>
+    <p class="text-center text-gray-500 dark:text-gray-400 mb-10">Best moments captured across all servers and games.</p>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 max-w-7xl mx-auto px-4">
+      <img loading="lazy" class="rounded-lg shadow-lg hover:shadow-cyan-400/50 transition duration-300 transform hover:scale-[1.02] cursor-pointer" src="https://placehold.co/400x250/1C004D/F0F8FF?text=CLUTCH+SAVE" alt="Gaming Highlight: Clutch Save" />
+      <img loading="lazy" class="rounded-lg shadow-lg hover:shadow-cyan-400/50 transition duration-300 transform hover:scale-[1.02] cursor-pointer" src="https://placehold.co/400x250/003366/FFFFFF?text=SURVIVAL+BASE" alt="Gaming Highlight: Survival Base Tour" />
+      <img loading="lazy" class="rounded-lg shadow-lg hover:shadow-cyan-400/50 transition duration-300 transform hover:scale-[1.02] cursor-pointer" src="https://placehold.co/400x250/4C0099/FFFFFF?text=PVP+MASTER" alt="Gaming Highlight: PVP Masterclass" />
+      <img loading="lazy" class="rounded-lg shadow-lg hover:shadow-cyan-400/50 transition duration-300 transform hover:scale-[1.02] cursor-pointer" src="https://placehold.co/400x250/004D4D/FFFFFF?text=MODS+SHOWCASE" alt="Gaming Highlight: Custom Mods Showcase" />
+    </div>
+  </section>
+
+  <!-- GAMES -->
+  <section id="games" class="section-padding text-center">
+    <h2 class="font-orbitron text-3xl mb-4 red-glow" style="color:var(--secondary)">FEATURED GAME MODES</h2>
+    <p class="text-gray-500 dark:text-gray-400 mb-10">Access the high-performance gaming experiences available now.</p>
+    <div class="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto px-4">
+
+      <!-- Game Card 1 -->
+      <div class="game-card">
+        <h3 class="font-orbitron text-2xl mb-2" style="color:var(--primary)">Minecraft Hardcore</h3>
+        <p class="text-sm mt-2 text-gray-400">Extreme survival world. One life, zero mercy.</p>
+        <button class="btn-clean mt-4 text-xs md:text-sm">JOIN SERVER</button>
+      </div>
+
+      <!-- Game Card 2 -->
+      <div class="game-card">
+        <h3 class="font-orbitron text-2xl mb-2" style="color:var(--primary)">Esports Arena</h3>
+        <p class="text-sm mt-2 text-gray-400">PVP tournaments with leaderboards and prizes.</p>
+        <button class="btn-clean mt-4 text-xs md:text-sm">ENTER ARENA</button>
+      </div>
+
+      <!-- Game Card 3 -->
+      <div class="game-card">
+        <h3 class="font-orbitron text-2xl mb-2" style="color:var(--primary)">Custom Modpack</h3>
+        <p class="text-sm mt-2 text-gray-400">Optimized build with performance and content mods.</p>
+        <button class="btn-clean mt-4 text-xs md:text-sm">DOWNLOAD</button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- FOOTER -->
+<footer class="py-10 bg-black text-center text-gray-400 border-t border-cyan-800">
+    <div class="font-orbitron text-xl glow" style="color:var(--primary)">RIGEROZ</div>
+    <p class="text-sm mt-2">&copy; 2025 RedSuke YT. All rights reserved. // <span class="text-cyan-400">Powered by Max Performance</span></p>
+    <div class="flex justify-center gap-4 mt-4">
+        <a href="#" class="text-gray-500 hover:text-cyan-400 transition">Privacy</a>
+        <a href="#" class="text-gray-500 hover:text-cyan-400 transition">Terms</a>
+    </div>
+</footer>
+
+<!-- CHAT BOT -->
+<div id="chatbot" class="fixed bottom-6 right-6 w-[90vw] max-w-xs md:w-80 bg-white dark:bg-[#151518] border border-cyan-400 rounded-xl shadow-xl hidden z-50 transition-all duration-300 ease-in-out">
+  <div class="p-3 font-orbitron text-sm border-b border-cyan-200 dark:border-cyan-700 text-cyan-500 flex justify-between items-center">
+      RIGEROZ AI
+      <button onclick="toggleChat()" class="text-red-500 hover:text-red-300">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+          </svg>
+      </button>
+  </div>
+  <div id="chatLog" class="p-3 h-48 overflow-y-auto text-sm custom-scrollbar">
+    <div class='mb-2 text-cyan-400'><b>AI:</b> Welcome, Player. How can I assist with your current mission objectives?</div>
+  </div>
+  <div class="flex border-t border-cyan-200 dark:border-cyan-700">
+    <input id="chatInput" class="flex-1 p-3 text-sm outline-none bg-transparent" placeholder="Ask about games…" onkeydown="if(event.key==='Enter')sendMsg()" />
+    <button onclick="sendMsg()" class="btn-clean rounded-none rounded-br-xl text-xs px-3">SEND</button>
+  </div>
+</div>
+
+<!-- SCRIPTS -->
+<script defer>
+// Loader
+window.addEventListener('load',()=>{
+  const loader = document.getElementById('loader');
+  loader.style.opacity='0';
+  setTimeout(()=>loader.remove(),500);
+});
+
+// Chatbot functionality
+const chatbot = document.getElementById('chatbot');
+function toggleChat(){
+    chatbot.classList.toggle('hidden');
+    // If opening, ensure the log scrolls to the bottom
+    if (!chatbot.classList.contains('hidden')) {
+        const log = document.getElementById('chatLog');
+        log.scrollTop = log.scrollHeight;
+    }
+}
+
+// Ensure the mobile AI button is hidden on desktop, and vice versa.
+// Note: This relies on Tailwind classes, but we can manage the state here too.
+// The toggle is handled by the button click now.
+
+function sendMsg(){
+  const input=document.getElementById('chatInput');
+  const log=document.getElementById('chatLog');
+  const userMsg = input.value.trim();
+  if(!userMsg) return;
+
+  // Append user message
+  log.innerHTML+=`<div class='mb-2 p-2 rounded-lg bg-gray-200 dark:bg-gray-700 ml-auto max-w-[80%]'><b>You:</b> ${userMsg}</div>`;
+
+  // Simulate AI response
+  const aiResponse = "Roger that. My analysis confirms system stability. This is a demo gaming assistant, but I'm ready for your next query!";
+  setTimeout(() => {
+    log.innerHTML+=`<div class='mb-2 p-2 rounded-lg bg-cyan-100 dark:bg-cyan-900 mr-auto max-w-[80%] text-cyan-800 dark:text-cyan-300'><b>AI:</b> ${aiResponse}</div>`;
+    log.scrollTop=log.scrollHeight;
+  }, 500); // 0.5 sec delay for dramatic effect
+
+  // Clean up
+  log.scrollTop=log.scrollHeight;
+  input.value='';
+}
+
+// Dark mode initialization and toggle
+const theme=document.getElementById('theme');
+const savedTheme = localStorage.getItem('theme');
+
+if (savedTheme === 'dark') {
+    document.body.classList.add('dark');
+} else if (savedTheme === 'light') {
+    document.body.classList.remove('dark');
+} else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    document.body.classList.add('dark');
+}
+
+theme.onclick = () => {
+    document.body.classList.toggle('dark');
+    const isDark = document.body.classList.contains('dark');
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    // Reinitialize primary color variable to update the FPS counter color if it uses the CSS variable
+    document.documentElement.style.setProperty('--primary', isDark ? '#00E0FF' : '#00E0FF');
+    clickSound.play(); // Play sound on theme toggle
+};
+
+// Stat animation (runs once on load)
+function animateStats(){
+    function animate(id,target){
+      let n=0;const el=document.getElementById(id);
+      const step = target / 30; // 30 steps for ~1 second animation
+      const i=setInterval(()=>{
+          n+=step;
+          if(n>=target){
+              el.textContent=target;
+              clearInterval(i);
+          } else {
+              el.textContent=Math.floor(n);
+          }
+      },30);
+    }
+    animate('lvl',48);
+    animate('xp',12450);
+}
+
+// Run animations after loader is gone
+window.addEventListener('load', animateStats);
+
+// Functionality to ensure the mobile AI button is hidden on desktop and vice versa
+window.addEventListener('resize', () => {
+    if (window.innerWidth >= 768) { // md breakpoint in tailwind
+        // Hide chatbot on desktop if it was open
+        chatbot.classList.add('hidden');
+    }
+});
+
+</script>
+
+<!-- Add custom scrollbar style for better aesthetics -->
+<style>
+/* For WebKit browsers (Chrome, Safari) */
+.custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: var(--primary);
+    border-radius: 10px;
+}
+body.dark .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: var(--primary);
+}
+</style>
+</body>
+</html>
+
+  
